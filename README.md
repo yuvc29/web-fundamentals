@@ -19,3 +19,16 @@ This repository contain the web fundamentals training.
    - [W3]](<https://www.w3schools.com/>)
    - [Javascript Tutorial](https://javascript.info/)
    - [MDN](https://developer.mozilla.org/en-US/)
+
+## Installation and Setup
+
+1. Install Vs Code [Download]](<https://code.visualstudio.com/download>)
+2. Install Volta for Node and Npm
+
+    ```
+    # install Volta
+    curl https://get.volta.sh | bash
+    # install Node
+    volta install node
+    # start using Node
+    ```
