@@ -7,9 +7,10 @@ function fetchDataFromServer() {
 }
 
 function printData(data) {
+  console.log(data);
   let ele = document.getElementById("code");
   let tempData = data.filter((a) => a.id < 50);
-  ele.innerHTML = JSON.stringify(tempData);
+  ele.innerHTML = JSON.stringify(tempData, null, 4);
 }
 
 fetchDataFromServer();

@@ -20,6 +20,10 @@ This repository contain the web fundamentals training.
    - [Javascript Tutorial](https://javascript.info/)
    - [MDN](https://developer.mozilla.org/en-US/)
 
+## Mock Apis
+```
+https://dummyjson.com/docs/users
+```
 ## Installation and Setup
 
 1. Install Vs Code [Download]](<https://code.visualstudio.com/download>)

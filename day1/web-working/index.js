@@ -10,4 +10,7 @@ function addElementIn404Page(text) {
   let parentEle = document.getElementById("main");
   parentEle.appendChild(div);
 }
-addElementIn404Page("Page Not Found");
+window.addEventListener("load", () => {
+  for (let i = 0; i < 1000000000; i++) {}
+  addElementIn404Page("Test");
+});
