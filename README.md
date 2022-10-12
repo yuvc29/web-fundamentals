@@ -22,7 +22,7 @@ This repository contain the web fundamentals training.
 
 ## Mock Apis
 ```
-https://dummyjson.com/docs/users
+https://dummyjson.com/users
 ```
 ## Installation and Setup
 
