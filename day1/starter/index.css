@@ -1,0 +1,38 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    display: grid;
+    gap: 10px;
+    margin: auto;
+    gap: 10px;
+    width: 93%;
+}
+header{
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.main-container{
+    display: grid;
+    grid-template-columns: repeat(5,auto);
+    gap: 10px;
+
+}
+
+.card{
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 40px;
+    background: rgb(251, 193, 193);
+}
+.keys{
+    padding: 10px 40px;
+    align-items: left;
+}
+.values{
+    align-items: right;
+}

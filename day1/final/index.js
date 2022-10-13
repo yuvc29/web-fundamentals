@@ -65,7 +65,7 @@ function renderCard(user) {
   img.setAttribute("src", user.image);
   let detailsContainer = document.createElement("div");
   detailsContainer.setAttribute("class", "details-container");
-  let nodes = fields.forEach((ele) => {
+  fields.forEach((ele) => {
     let { label, formatter, value } = ele;
     if (formatter) {
       value = formatter(user);
