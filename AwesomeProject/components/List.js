@@ -1,19 +1,39 @@
-import React, {useState} from 'react';
-import { Image, View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useEffect, useState} from 'react';
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import Realm from "realm";
 
 
-const storeData = async (value) => {
-    try {
-      const jsonValue = JSON.stringify(value)
-      await AsyncStorage.setItem('todo', jsonValue)
-    } catch (e) {
-      // saving error
+const TaskSchema = {
+    name: "Todo",
+    primaryKey: "_id",
+    properties: {
+        _id: "int",
+        title:"String",
+        dueDate: "date",
+        body:"body",
+        status:"String"
     }
-  }
+};
 
 
 const List = ({route, navigation }) => {
+
+    // const realm = Realm.open({
+    //     path: "myrealm",
+    //     schema: [TaskSchema],
+    // });
+
+    // realm.write(()=>{
+    //     realm.create("Todo", {
+    //         title:"Exercise",
+    //         dueDate: date,
+    //         body:"Aerobics, Running",
+    //         status:"complete"
+    //     });
+    // })
+
     const [toggle, setToggle] = useState("Todo")
     const date = new Date().toLocaleDateString()
     const statusWiseList = (todo)=>{
@@ -21,6 +41,7 @@ const List = ({route, navigation }) => {
         else if(toggle === 'Doing')return todo.status === 'incomplete'
         return todo.status === 'complete'
     }
+    // const [todoList, setTodoList] = useState(realm.objects("Todo"))
     const [todoList, setTodoList] = useState([
         {
             title:"Exercise",
@@ -35,15 +56,17 @@ const List = ({route, navigation }) => {
             status:"incomplete"
         }
     ])
-    const newList = ()=>{
+    useEffect(()=>{
         if(route.params.hasOwnProperty('title'))
             setTodoList(
                 [
-                    ...todoList, {title:route.params.title, dueDate:route.params.title}
+                    ...todoList, {
+                        title:route.params.title,
+                        dueDate:route.params.dueDate
+                    }
                 ]
             )
-            storeData({title:route.params.title, dueDate:route.params.title})
-    }
+    }, [route.params?.title])
     return (
       <View style={styles.layer0}>
         <View style={styles.header}>
@@ -51,8 +74,10 @@ const List = ({route, navigation }) => {
         </View>
         
         <View style = {styles.listContainer}>
-            <View style = {styles.list}>
+            <ScrollView style = {{marginTop : 60}}>
+                <SafeAreaView style = {styles.list}>
                 {
+                    
                     todoList.filter(statusWiseList).map(
                         (value)=>(
                             <View style = {{ margin:5,  backgroundColor:'white', alignItems:'center', flexDirection:'row', width:370, borderRadius:5, height:100}}>
@@ -64,18 +89,16 @@ const List = ({route, navigation }) => {
                                 <View style = {{flex:50, alignItems:'flex-start', justifyContent:'center', height:100, padding:10}}>
                                 <Text style={{fontSize:20,  color:'black'}}>{value.title}</Text>
                                 </View>
-                                <View style = {{ borderLeftColor:'gray', borderLeftWidth:2, flex:20, alignItems:'flex-start', justifyContent:'center', height:100, padding:10}}>
-                                <Text style={{fontSize:20,  color:'black'}}>done</Text>
-                                </View>
                             </View> 
                         )
                     )
                 }
-            </View>
+                </SafeAreaView>
+            </ScrollView>
         </View>
 
         <View style={{justifyContent:'center',alignItems:'center',alignSelf:'center', position:'absolute', bottom:'5%', right:'5%'}}>
-            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Home', {navigation:navigation})}>
                     <View style={{flexDirection:'row', backgroundColor:'#5E23C2',height:50, width:50, borderRadius:25}}>
                     </View>
             </TouchableOpacity>
@@ -142,8 +165,6 @@ const styles = StyleSheet.create({
     },
     list:{
         flex:1,
-        paddingTop:60,
-        
         flexDirection:'column',
         alignItems: 'center', 
     },

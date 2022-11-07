@@ -1,7 +1,11 @@
 import React, { useState} from 'react';  
 import {TextInput, Button, StyleSheet, Text, View} from 'react-native'; 
-// import axios from 'axios';
+ //import axios from 'axios';
 const Login = (props)=>{
+    const [mode, setMode] = useState("Log-In")
+    const [name, setName] = useState({
+        name:""
+    })
     const [email, setEmail] = useState({
         email:"",
         error:""
@@ -26,23 +30,38 @@ const Login = (props)=>{
         })
     }
     function onSubmit(e){
-        props.nav.navigate('Details', {email:email.email})
+        if(email.error !== 'Valid' || password.error !== 'Valid'){
+            alert("Fill valid entries")
+        }
+        else props.nav.navigate('Details', {email:email.email})
         // e.preventDefault();
         // const payload = {email:email.email, password:password.password}
         // console.log("onSubmit")
         // postUser(payload, navigation)
     }
     function redirect(e){
-
+        setMode(mode==="Log-In"?"Sign-In": "Log-In" )
     }
     return (
+     
         <View style={[styles.container, styles.shadowProp]}>
             <Text style = {styles.header}>
-                Log-In
+                {mode}
             </Text>
           
             <View style = {styles.form}>
-                <View style={{margin: 20}}>
+                {mode === "Sign-In" &&
+                    (<View style={{ marginHorizontal:20}}>
+                        <TextInput
+                            style={styles.input}  
+                            placeholder= "Your Name"
+                            value={name.name}
+                            onChangeText = {(text)=>setName(text)}
+                        />
+                        <Text>{name.error}</Text>
+                    </View>)
+                }
+                <View style={{ marginHorizontal: 20}}>
                     <TextInput
                         style={styles.input}  
                         placeholder= "Your Email Id"
@@ -51,9 +70,9 @@ const Login = (props)=>{
                     />
                     <Text>{email.error}</Text>
                 </View>
-                <View style={{margin: 20}}>
+                <View style={{ marginHorizontal: 20}}>
                     <TextInput style={styles.input} 
-                        secureTextEntry={false} 
+                        secureTextEntry={true} 
                         value={password.password} 
                         onChange = {passwordChange} 
                         placeholder= "Password"
@@ -64,22 +83,29 @@ const Login = (props)=>{
                     style={styles.button}
                 >
                     <Button
-                        title="Login"
+                        title= {mode}
                         color="#790C97"
                         // buttonStyle={{borderRadius:10}}
                         onPress={onSubmit}
                     />
                 </View>
                 <View style = {styles.newuser}>
-                    <Text  >Don't have an account?&nbsp;
-                        <Text style={{color: '#790C97'}} onPress = {redirect} >
-                            Sign-In
-                        </Text>
-                    </Text>
+                    {
+                        mode==="Log=In"?
+                        (<Text  >Don't have an account?&nbsp;
+                            <Text style={{color: '#790C97'}} onPress = {redirect} >
+                                Sign-In
+                            </Text>
+                        </Text>):
+                        (<Text  >Already have an account?&nbsp;
+                            <Text style={{color: '#790C97'}} onPress = {redirect} >
+                                Log-In
+                            </Text>
+                        </Text>)
+                    }
                 </View>
             </View>
         </View>
-        
     )
 }
 
@@ -91,6 +117,7 @@ function validateEmail(email)
     else if(email.length > 25)
     return "Email too long"
     else if(/\S+@\S+\.\S+/.test(email) === false)return "Invalid Email"
+    else return "Valid"
 }
 
 function validatePassword(password) 
@@ -102,6 +129,7 @@ function validatePassword(password)
     return "Password too short"
     else if(password.length > 15)
     return "Password too long"
+    else return "Valid"
 }
 
 // function postUser(payload , navigation){
@@ -117,8 +145,9 @@ function validatePassword(password)
 
 const styles = StyleSheet.create({  
     container: {  
-      flex: 2,
-      borderRadius: 20,
+      flex: 3,
+      borderTopEndRadius: 20,
+      borderTopStartRadius: 20,
       justifyContent: 'center',  
       alignItems: 'center',  
       backgroundColor: '#FFFFFF',
@@ -136,7 +165,7 @@ const styles = StyleSheet.create({
         color:'#000000',
     },
     form: {
-        flex:5,
+        flex:8,
         fontSize:30,
         padding:20,
     },

@@ -1,17 +1,16 @@
-import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import React, { useState} from 'react';  
-import {SafeAreaView, TextInput, Button, StyleSheet, Text, View} from 'react-native'; 
+import { TextInput, Button, StyleSheet, Text, View} from 'react-native'; 
 // import axios from 'axios';
 import DatePicker from 'react-native-date-picker';
-const Form = (props)=>{
+const Form = ({navigation})=>{
     const [email, setEmail] = useState({
         email:"",
-        error:""
+        error:"Empty"
     })
     const [date, setDate] = useState(new Date())
 
     function emailChange (text){
-        validateEmail(text, setEmail)
+        //validateEmail(text, setEmail)
         setEmail({
             email:text,
             error:validateEmail(text)
@@ -20,12 +19,16 @@ const Form = (props)=>{
     }
     function onSubmit(e){
         e.preventDefault();
-        if(date < new Date())alert("pick a future date")
-        props.navigation.navigate('Details',{
-            title:email,
-            dueDate: date,
-            body:"Aerobics, Running",
-            status:"incomplete"})
+        if(email.error !== "Valid" )alert("Choose a Valid title")
+        else if(date < new Date())alert("pick a future date")
+        else navigation.navigate({
+            name:'Details',
+            params:{
+                title:email,
+                dueDate: date
+            },
+            merge:true
+        })
         // const payload = {email:email.email, password:password.password}
         // console.log("onSubmit")
         // postUser(payload, navigation)
@@ -37,16 +40,16 @@ const Form = (props)=>{
             </Text>
           
             <View style = {styles.form}>
-                <View >
+                <View style = {{ marginHorizontal:20, marginBottom :100}}>
                     <TextInput
                         style={styles.input}  
                         placeholder= "Todo Title"
                         value={email.email}
                         onChangeText = {(text)=>emailChange(text)}
                     />
-                    <Text>{email.error}</Text>
+                    <Text >{email.error}</Text>
                 </View>
-                <DatePicker date={date} onDateChange={setDate} />
+                <DatePicker date={date} onDateChange={setDate} style = {{ marginBottom :50}}/>
                 <View  
                     style={styles.button}
                 >
@@ -70,6 +73,7 @@ function validateEmail(email)
     return "Cannot be Empty"
     else if(email.length > 25)
     return "Title too long"
+    else return "Valid"
 }
 // function validatePassword(password) 
 // {
@@ -108,12 +112,12 @@ const styles = StyleSheet.create({
         color:'#000000',
     },
     form: {
+        
         flex:4,
         fontSize:30,
         padding:20,
     },
     input: {
-        margin: 20,
         //borderBottomColor:'#000000',
         borderColor:'#000000',
         borderBottomWidth: 1,
@@ -132,27 +136,6 @@ const styles = StyleSheet.create({
     },
 
 
-    container: {
-        flex: 1,
-        padding: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor : '#A8E9CA'
-      },
-      title: {
-        textAlign: 'left',
-        fontSize: 20,
-        fontWeight: 'bold',
-      },
-      datePickerStyle: {
-        width: 230,
-      },
-      text: {
-        textAlign: 'left',
-        width: 230,
-        fontSize: 16,
-        color : "#000"
-      }
   });  
 
   export default Form
