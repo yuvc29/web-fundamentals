@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { ScrollView, Text } from 'react-native';
-import {Platform, StyleSheet, View} from 'react-native';
+import React from 'react';
+import {  Text } from 'react-native';
+import { StyleSheet, View} from 'react-native';
 import Login from './components/Login.js'
-const Cat = () => {
+const Cat = ({navigation}) => {
   return (
     <View  style = {styles.layer0}>
       <View style = {styles.layer1}>
         <Text style = {styles.layer2}>To Do App</Text>
       </View>
-      <Login  />
+      <Login nav = {navigation}/>
     </View>
   );
 }

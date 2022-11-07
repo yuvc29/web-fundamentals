@@ -1,81 +1,61 @@
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import React, { useState} from 'react';  
-import {TextInput, Button, StyleSheet, Text, View} from 'react-native'; 
+import {SafeAreaView, TextInput, Button, StyleSheet, Text, View} from 'react-native'; 
 // import axios from 'axios';
-const Login = (props)=>{
+import DatePicker from 'react-native-date-picker';
+const Form = (props)=>{
     const [email, setEmail] = useState({
         email:"",
         error:""
     })
-    const [password, setPassword] = useState({
-        password:"",
-        error:""
-    })
+    const [date, setDate] = useState(new Date())
 
     function emailChange (text){
-        //validateEmail(text, setEmail)
+        validateEmail(text, setEmail)
         setEmail({
             email:text,
             error:validateEmail(text)
         })
 
     }
-    function passwordChange(text){
-        setPassword({
-            password:text, 
-            error:validatePassword(text)
-        })
-    }
     function onSubmit(e){
-        props.nav.navigate('Details', {email:email.email})
-        // e.preventDefault();
+        e.preventDefault();
+        if(date < new Date())alert("pick a future date")
+        props.navigation.navigate('Details',{
+            title:email,
+            dueDate: date,
+            body:"Aerobics, Running",
+            status:"incomplete"})
         // const payload = {email:email.email, password:password.password}
         // console.log("onSubmit")
         // postUser(payload, navigation)
     }
-    function redirect(e){
-
-    }
     return (
-        <View style={[styles.container, styles.shadowProp]}>
+        <View style={[styles.listContainer, styles.shadowProp]}>
             <Text style = {styles.header}>
-                Log-In
+                Add New ToDo
             </Text>
           
             <View style = {styles.form}>
-                <View style={{margin: 20}}>
+                <View >
                     <TextInput
                         style={styles.input}  
-                        placeholder= "Your Email Id"
+                        placeholder= "Todo Title"
                         value={email.email}
                         onChangeText = {(text)=>emailChange(text)}
                     />
                     <Text>{email.error}</Text>
                 </View>
-                <View style={{margin: 20}}>
-                    <TextInput style={styles.input} 
-                        secureTextEntry={false} 
-                        value={password.password} 
-                        onChange = {passwordChange} 
-                        placeholder= "Password"
-                    />
-                    <Text>{password.error}</Text>
-                </View>
+                <DatePicker date={date} onDateChange={setDate} />
                 <View  
                     style={styles.button}
                 >
                     <Button
-                        title="Login"
+                        title="Add"
                         color="#790C97"
                         // buttonStyle={{borderRadius:10}}
                         onPress={onSubmit}
                     />
-                </View>
-                <View style = {styles.newuser}>
-                    <Text  >Don't have an account?&nbsp;
-                        <Text style={{color: '#790C97'}} onPress = {redirect} >
-                            Sign-In
-                        </Text>
-                    </Text>
                 </View>
             </View>
         </View>
@@ -89,20 +69,12 @@ function validateEmail(email)
     if(email === "" )
     return "Cannot be Empty"
     else if(email.length > 25)
-    return "Email too long"
-    else if(/\S+@\S+\.\S+/.test(email) === false)return "Invalid Email"
+    return "Title too long"
 }
-
-function validatePassword(password) 
-{
-
-    if(password === "" )
-    return "Cannot be Empty"
-    else if(password.length < 8)
-    return "Password too short"
-    else if(password.length > 15)
-    return "Password too long"
-}
+// function validatePassword(password) 
+// {
+//     if(password.length < 8)
+// }
 
 // function postUser(payload , navigation){
 //       let response = axios.post(`/login?username=${payload.email}&password=${payload.password}`)
@@ -116,7 +88,7 @@ function validatePassword(password)
 //   }
 
 const styles = StyleSheet.create({  
-    container: {  
+    listContainer: {  
       flex: 2,
       borderRadius: 20,
       justifyContent: 'center',  
@@ -136,11 +108,12 @@ const styles = StyleSheet.create({
         color:'#000000',
     },
     form: {
-        flex:5,
+        flex:4,
         fontSize:30,
         padding:20,
     },
     input: {
+        margin: 20,
         //borderBottomColor:'#000000',
         borderColor:'#000000',
         borderBottomWidth: 1,
@@ -155,8 +128,31 @@ const styles = StyleSheet.create({
         width:300
     },
     newuser: {
-        alignSelf :'center'
-    }
+        align:'center'
+    },
+
+
+    container: {
+        flex: 1,
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor : '#A8E9CA'
+      },
+      title: {
+        textAlign: 'left',
+        fontSize: 20,
+        fontWeight: 'bold',
+      },
+      datePickerStyle: {
+        width: 230,
+      },
+      text: {
+        textAlign: 'left',
+        width: 230,
+        fontSize: 16,
+        color : "#000"
+      }
   });  
 
-  export default Login
+  export default Form
