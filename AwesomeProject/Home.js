@@ -2,7 +2,7 @@ import React from 'react';
 import {  Text } from 'react-native';
 import { StyleSheet, View} from 'react-native';
 import Login from './components/Login.js'
-const Cat = ({navigation}) => {
+const Home = ({navigation}) => {
   return (
     <View  style = {styles.layer0}>
       <View style = {styles.layer1}>
@@ -13,7 +13,7 @@ const Cat = ({navigation}) => {
   );
 }
 
-export default Cat;
+export default Home;
 
 const styles = StyleSheet.create({  
   layer0: { 

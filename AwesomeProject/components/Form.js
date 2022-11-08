@@ -1,37 +1,38 @@
 import React, { useState} from 'react';  
 import { TextInput, Button, StyleSheet, Text, View} from 'react-native'; 
 // import axios from 'axios';
+import { postTodo } from '../db/Realm';
 import DatePicker from 'react-native-date-picker';
+
+
 const Form = ({navigation})=>{
-    const [email, setEmail] = useState({
-        email:"",
+    const [title, setTitle] = useState({
+        title:"",
         error:"Empty"
     })
     const [date, setDate] = useState(new Date())
 
-    function emailChange (text){
-        //validateEmail(text, setEmail)
-        setEmail({
-            email:text,
-            error:validateEmail(text)
+    function titleChange (text){
+        setTitle({
+            title:text,
+            error:validateTitle(text)
         })
-
     }
     function onSubmit(e){
         e.preventDefault();
-        if(email.error !== "Valid" )alert("Choose a Valid title")
+        if(title.error !== "Valid" )alert("Choose a Valid title")
         else if(date < new Date())alert("pick a future date")
-        else navigation.navigate({
-            name:'Details',
-            params:{
-                title:email,
-                dueDate: date
-            },
-            merge:true
-        })
-        // const payload = {email:email.email, password:password.password}
-        // console.log("onSubmit")
-        // postUser(payload, navigation)
+        else {
+            postTodo(title, date.toString(), "incomplete", "")
+            navigation.navigate({
+                name:'List',
+                params:{
+                    title:title.title,
+                    dueDate:date.toString()
+                },
+                merge:true
+            })
+        }
     }
     return (
         <View style={[styles.listContainer, styles.shadowProp]}>
@@ -44,10 +45,10 @@ const Form = ({navigation})=>{
                     <TextInput
                         style={styles.input}  
                         placeholder= "Todo Title"
-                        value={email.email}
-                        onChangeText = {(text)=>emailChange(text)}
+                        value={title.title}
+                        onChangeText = {(text)=>titleChange(text)}
                     />
-                    <Text >{email.error}</Text>
+                    <Text >{title.error}</Text>
                 </View>
                 <DatePicker date={date} onDateChange={setDate} style = {{ marginBottom :50}}/>
                 <View  
@@ -67,29 +68,14 @@ const Form = ({navigation})=>{
 }
 
 
-function validateEmail(email) 
+function validateTitle(title) 
 {
-    if(email === "" )
+    if(title === "" )
     return "Cannot be Empty"
-    else if(email.length > 25)
+    else if(title.length > 25)
     return "Title too long"
     else return "Valid"
 }
-// function validatePassword(password) 
-// {
-//     if(password.length < 8)
-// }
-
-// function postUser(payload , navigation){
-//       let response = axios.post(`/login?username=${payload.email}&password=${payload.password}`)
-//       .then((response) => response.json())
-//       .then((data) => {
-//           //if(data.status == 200)navigation.navigate('Details')
-//           console.log(data.status)
-//       }).catch((error)=>{
-//         console.log("Api call error");
-//      });
-//   }
 
 const styles = StyleSheet.create({  
     listContainer: {  

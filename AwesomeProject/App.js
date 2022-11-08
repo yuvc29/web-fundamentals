@@ -1,23 +1,9 @@
 import * as React from 'react';
-import { Button, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Cat from './Cat';
+import Home from './Home';
 import List from './components/List';
 import Form from './components/Form'
-
-
-function HomeScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-      <Button
-        title="Go to Details"
-        onPress={() => navigation.navigate('Details')}
-      />
-    </View>
-  );
-}
 
 
 
@@ -25,10 +11,10 @@ const Stack = createNativeStackNavigator();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={Cat} />
-        <Stack.Screen name="Details" component={List} />
-        <Stack.Screen name="Home" component={Form} />
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}/>
+        <Stack.Screen name="List" component={List} options={{ headerShown: false }}/>
+        <Stack.Screen name="Add" component={Form} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

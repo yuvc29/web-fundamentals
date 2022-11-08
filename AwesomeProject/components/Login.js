@@ -1,6 +1,6 @@
 import React, { useState} from 'react';  
 import {TextInput, Button, StyleSheet, Text, View} from 'react-native'; 
- //import axios from 'axios';
+// import axios from 'axios';
 const Login = (props)=>{
     const [mode, setMode] = useState("Log-In")
     const [name, setName] = useState({
@@ -16,7 +16,6 @@ const Login = (props)=>{
     })
 
     function emailChange (text){
-        //validateEmail(text, setEmail)
         setEmail({
             email:text,
             error:validateEmail(text)
@@ -33,11 +32,12 @@ const Login = (props)=>{
         if(email.error !== 'Valid' || password.error !== 'Valid'){
             alert("Fill valid entries")
         }
-        else props.nav.navigate('Details', {email:email.email})
-        // e.preventDefault();
-        // const payload = {email:email.email, password:password.password}
-        // console.log("onSubmit")
-        // postUser(payload, navigation)
+        else {
+            e.preventDefault();
+            const payload = {email:email.email, password:password.password}
+            // postUser(payload, navigation)
+            props.nav.navigate('List', {email:email.email})
+        }
     }
     function redirect(e){
         setMode(mode==="Log-In"?"Sign-In": "Log-In" )
@@ -74,7 +74,7 @@ const Login = (props)=>{
                     <TextInput style={styles.input} 
                         secureTextEntry={true} 
                         value={password.password} 
-                        onChange = {passwordChange} 
+                        onChangeText = {passwordChange} 
                         placeholder= "Password"
                     />
                     <Text>{password.error}</Text>
@@ -91,7 +91,7 @@ const Login = (props)=>{
                 </View>
                 <View style = {styles.newuser}>
                     {
-                        mode==="Log=In"?
+                        mode==="Log-In"?
                         (<Text  >Don't have an account?&nbsp;
                             <Text style={{color: '#790C97'}} onPress = {redirect} >
                                 Sign-In
@@ -136,9 +136,10 @@ function validatePassword(password)
 //       let response = axios.post(`/login?username=${payload.email}&password=${payload.password}`)
 //       .then((response) => response.json())
 //       .then((data) => {
-//           //if(data.status == 200)navigation.navigate('Details')
-//           console.log(data.status)
+//           if(data.status === 200)
+//           console.log("Api call error");
 //       }).catch((error)=>{
+//         alert("Invalid Credentials")
 //         console.log("Api call error");
 //      });
 //   }

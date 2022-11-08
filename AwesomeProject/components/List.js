@@ -2,75 +2,60 @@ import React, {useEffect, useState} from 'react';
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
-// import Realm from "realm";
+import Realm from "realm";
+import { getAllTodo } from '../db/Realm';
 
-
-const TaskSchema = {
-    name: "Todo",
-    primaryKey: "_id",
-    properties: {
-        _id: "int",
-        title:"String",
-        dueDate: "date",
-        body:"body",
-        status:"String"
-    }
-};
 
 
 const List = ({route, navigation }) => {
-
-    // const realm = Realm.open({
-    //     path: "myrealm",
-    //     schema: [TaskSchema],
-    // });
-
-    // realm.write(()=>{
-    //     realm.create("Todo", {
-    //         title:"Exercise",
-    //         dueDate: date,
-    //         body:"Aerobics, Running",
-    //         status:"complete"
-    //     });
-    // })
+    
 
     const [toggle, setToggle] = useState("Todo")
     const date = new Date().toLocaleDateString()
+    const [user, setUser] = useState("")
+    
+    
+    // const [todoList, setTodoList] = useState(realm.objects("Todo"))
+    const [todoList, setTodoList] = useState([])
+    useEffect(() => {
+        setPendingTodos(getAllTodo())
+      }, [])
+
+    useEffect(()=>{
+        if(route.params?.email){
+            setUser(route.params.email)
+        }
+        if(route.params?.title)
+            setTodoList(
+                [
+                    ...todoList, {
+                        title:route.params.title,
+                        dueDate:new Date(route.params.dueDate),
+                        body: "",
+                        status:'incomplete'
+                    }
+                ]
+            )
+    }, [route.params?.email, route.params?.title])
+    
     const statusWiseList = (todo)=>{
         if(toggle === 'Todo')return true;
         else if(toggle === 'Doing')return todo.status === 'incomplete'
         return todo.status === 'complete'
     }
-    // const [todoList, setTodoList] = useState(realm.objects("Todo"))
-    const [todoList, setTodoList] = useState([
-        {
-            title:"Exercise",
-            dueDate: date,
-            body:"Aerobics, Running",
-            status:"complete"
-        },
-        {
-            title:"Cooking",
-            dueDate: date,
-            body:"Breakfast, snacks",
-            status:"incomplete"
-        }
-    ])
-    useEffect(()=>{
-        if(route.params.hasOwnProperty('title'))
-            setTodoList(
-                [
-                    ...todoList, {
-                        title:route.params.title,
-                        dueDate:route.params.dueDate
-                    }
-                ]
-            )
-    }, [route.params?.title])
+
+    const swap = (value)=>{
+        const change = value.status === 'incomplete'?'complete':'incomplete' ;
+        const obj =  todoList.map((todo)=>{
+            if(todo.title === value.title)return {...value, status:change}
+            return todo
+        })
+        return obj
+    }
     return (
-      <View style={styles.layer0}>
+        <View style={styles.layer0}>
         <View style={styles.header}>
-            <Text style={{fontSize:25, fontWeight:'bold', color: 'white'}} >Hi {route.params.email}</Text>
+            <Text style={{fontSize:25, fontWeight:'bold', color: 'white'}} >Hi {user}</Text>
         </View>
         
         <View style = {styles.listContainer}>
@@ -89,16 +74,24 @@ const List = ({route, navigation }) => {
                                 <View style = {{flex:50, alignItems:'flex-start', justifyContent:'center', height:100, padding:10}}>
                                 <Text style={{fontSize:20,  color:'black'}}>{value.title}</Text>
                                 </View>
+                                <View style = {{flex:30, backgroundColor:'silver', alignItems:'flex-start', justifyContent:'center', height:100, padding:10}}>
+                                <Text onPress = {()=>setTodoList(swap(value)) } style={[{fontSize:20,  color:'black'}]  }>{value.status}</Text>
+                                </View>
                             </View> 
                         )
                     )
                 }
                 </SafeAreaView>
             </ScrollView>
+            {/* <Flatlist 
+                style = {styles.list}
+                data = {todoList}
+                renderItem = {}
+            /> */}
         </View>
 
         <View style={{justifyContent:'center',alignItems:'center',alignSelf:'center', position:'absolute', bottom:'5%', right:'5%'}}>
-            <TouchableOpacity onPress={() => navigation.navigate('Home', {navigation:navigation})}>
+            <TouchableOpacity onPress={() => navigation.navigate('Add', {navigation:navigation})}>
                     <View style={{flexDirection:'row', backgroundColor:'#5E23C2',height:50, width:50, borderRadius:25}}>
                     </View>
             </TouchableOpacity>
