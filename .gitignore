@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/AwesomeProject/node_modules
 /.pnp
 .pnp.js
 
