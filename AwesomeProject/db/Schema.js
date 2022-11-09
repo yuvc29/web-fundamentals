@@ -1,11 +1,9 @@
 
 const Schema = {
-    name: "Todo",
-    primaryKey: "_id",
+    name: "Todos",
     properties: {
-        _id: "objectId",
         title: "string",
-        duDate:"string",
+        dueDate:"string",
         status:"string",
         body:"string"
     }

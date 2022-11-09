@@ -3,7 +3,7 @@ import { ScrollView, View, Text, StyleSheet, TouchableOpacity} from 'react-nativ
 import { SafeAreaView } from 'react-native-safe-area-context';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 import Realm from "realm";
-import { getAllTodo } from '../db/Realm';
+import { getAllTodo, updateTodo } from '../db/Realm';
 
 
 
@@ -11,33 +11,39 @@ const List = ({route, navigation }) => {
     
 
     const [toggle, setToggle] = useState("Todo")
-    const date = new Date().toLocaleDateString()
     const [user, setUser] = useState("")
-    
-    
-    // const [todoList, setTodoList] = useState(realm.objects("Todo"))
-    const [todoList, setTodoList] = useState([])
+    // const date = new Date().toLocaleDateString()
+    const [todoList, setTodoList] = useState([
+    ])
     useEffect(() => {
-        setPendingTodos(getAllTodo())
+        const newList = getAllTodo()
+        setTodoList(newList)
       }, [])
 
     useEffect(()=>{
         if(route.params?.email){
             setUser(route.params.email)
         }
-        if(route.params?.title)
-            setTodoList(
-                [
-                    ...todoList, {
-                        title:route.params.title,
-                        dueDate:new Date(route.params.dueDate),
-                        body: "",
-                        status:'incomplete'
-                    }
-                ]
-            )
-    }, [route.params?.email, route.params?.title])
+        // if(route.params?.title)
+        //     setTodoList(
+        //         [
+        //             ...todoList, {
+        //                 title:route.params.title,
+        //                 // dueDate:route.params.dueDate,
+        //                 dueDate:date,
+        //                 body: "",
+        //                 status:'incomplete'
+        //             }
+        //         ]
+        //     )
+    }, [route.params?.email]) //...value,
     
+    const due = (dueDate)=>{
+        const dd = new Date(dueDate)
+        dd.to
+        return dd.toLocaleDateString() + " "+  dd.toLocaleTimeString()//dd.getTime().toString() 
+    }
+
     const statusWiseList = (todo)=>{
         if(toggle === 'Todo')return true;
         else if(toggle === 'Doing')return todo.status === 'incomplete'
@@ -46,11 +52,11 @@ const List = ({route, navigation }) => {
 
     const swap = (value)=>{
         const change = value.status === 'incomplete'?'complete':'incomplete' ;
-        const obj =  todoList.map((todo)=>{
-            if(todo.title === value.title)return {...value, status:change}
+        updateTodo(value.title, change)
+        return todoList.map((todo)=>{
+            if(todo.title === value.title)return {title:value.title, dueDate:value.dueDate, body:value.body, status:change}
             return todo
         })
-        return obj
     }
     return (
         <View style={styles.layer0}>
@@ -69,13 +75,13 @@ const List = ({route, navigation }) => {
                                 <View style = {[{flex:1,  height:100, backgroundColor:'green', borderTopLeftRadius: 5, borderBottomLeftRadius:5}, value.status === 'incomplete' && {backgroundColor:'yellow'},]}>
                                 </View>
                                 <View style = {{flex:35,  height:100, alignItems:'center', justifyContent:'center', backgroundColor:'silver'}}>
-                                <Text style={{fontSize:20, fontWeight:'bold', color:'white'}}>{value.dueDate}</Text>
+                                <Text style={{fontSize:17, fontWeight:'bold', color:'white'}}>{due(value.dueDate)}</Text>
                                 </View>
                                 <View style = {{flex:50, alignItems:'flex-start', justifyContent:'center', height:100, padding:10}}>
                                 <Text style={{fontSize:20,  color:'black'}}>{value.title}</Text>
                                 </View>
-                                <View style = {{flex:30, backgroundColor:'silver', alignItems:'flex-start', justifyContent:'center', height:100, padding:10}}>
-                                <Text onPress = {()=>setTodoList(swap(value)) } style={[{fontSize:20,  color:'black'}]  }>{value.status}</Text>
+                                <View style = {{flex:15,  alignItems:'flex-start', justifyContent:'center', height:100, padding:10}}>
+                                <Text onPress = {()=>{setTodoList(swap(value))}  } style={[{fontSize:20,  color:'silver'}, value.status==='complete' && {color:'green', fontWeight:'bold'}]  }>done</Text>
                                 </View>
                             </View> 
                         )
@@ -85,14 +91,15 @@ const List = ({route, navigation }) => {
             </ScrollView>
             {/* <Flatlist 
                 style = {styles.list}
-                data = {todoList}
+                data = {todoList}    
                 renderItem = {}
             /> */}
         </View>
 
-        <View style={{justifyContent:'center',alignItems:'center',alignSelf:'center', position:'absolute', bottom:'5%', right:'5%'}}>
-            <TouchableOpacity onPress={() => navigation.navigate('Add', {navigation:navigation})}>
-                    <View style={{flexDirection:'row', backgroundColor:'#5E23C2',height:50, width:50, borderRadius:25}}>
+        <View style={{ position:'absolute', bottom:'5%', right:'5%'}}>
+            <TouchableOpacity onPress={() => navigation.navigate('Add', {navigation:navigation})  }>
+                    <View style={{ alignItems:'center', flexDirection:'column', justifyContent:'center', backgroundColor:'#5E23C2',height:50, width:50, borderRadius:25}}>
+                        <Text style={{fontSize:30, color:'white'}}>+</Text>
                     </View>
             </TouchableOpacity>
        </View>

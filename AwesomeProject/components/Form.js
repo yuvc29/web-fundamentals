@@ -23,12 +23,11 @@ const Form = ({navigation})=>{
         if(title.error !== "Valid" )alert("Choose a Valid title")
         else if(date < new Date())alert("pick a future date")
         else {
-            postTodo(title, date.toString(), "incomplete", "")
+            postTodo(title.title, date.toDateString(), "incomplete", "")
             navigation.navigate({
                 name:'List',
                 params:{
-                    title:title.title,
-                    dueDate:date.toString()
+                    title:title.title
                 },
                 merge:true
             })

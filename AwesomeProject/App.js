@@ -14,7 +14,7 @@ function App() {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}/>
         <Stack.Screen name="List" component={List} options={{ headerShown: false }}/>
-        <Stack.Screen name="Add" component={Form} options={{ headerShown: false }}/>
+        <Stack.Screen name="Add" component={Form} options={{ headerShown: true }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
