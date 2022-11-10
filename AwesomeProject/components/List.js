@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import { ScrollView, FlatList, View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 import Realm from "realm";
@@ -58,6 +58,26 @@ const List = ({route, navigation }) => {
             return todo
         })
     }
+    
+    const renderItem = (data) => {
+        console.log(data);
+        const value = data.item;
+        
+        return <View style = {{ margin:5,  backgroundColor:'white', alignItems:'center', flexDirection:'row', width:370, borderRadius:20, height:100}}>
+                                <View style = {[{flex:1,  height:100, backgroundColor:'green', borderTopLeftRadius: 5, borderBottomLeftRadius:5}, value.status === 'incomplete' && {backgroundColor:'yellow'},]}>
+                                </View>
+                                <View style = {{flex:35,  height:100, alignItems:'center', justifyContent:'center', backgroundColor:'silver'}}>
+                                <Text style={{fontSize:17, fontWeight:'bold', color:'white'}}>{due(value.dueDate)}</Text>
+                                </View>
+                                <View style = {{flex:50, alignItems:'flex-start', justifyContent:'center', height:100, padding:10}}>
+                                <Text style={{fontSize:20,  color:'black'}}>{value.title}</Text>
+                                </View>
+                                <View style = {{flex:15,  alignItems:'flex-start', justifyContent:'center', height:100, padding:10}}>
+                                <Text onPress = {()=>{setTodoList(swap(value))}  } style={[{fontSize:20,  color:'silver'}, value.status==='complete' && {color:'green', fontWeight:'bold'}]  }>done</Text>
+                                </View>
+                            </View> 
+    }
+
     return (
         <View style={styles.layer0}>
         <View style={styles.header}>
@@ -65,7 +85,7 @@ const List = ({route, navigation }) => {
         </View>
         
         <View style = {styles.listContainer}>
-            <ScrollView style = {{marginTop : 60}}>
+            {/* <ScrollView style = {{marginTop : 60}}>
                 <SafeAreaView style = {styles.list}>
                 {
                     
@@ -88,12 +108,15 @@ const List = ({route, navigation }) => {
                     )
                 }
                 </SafeAreaView>
-            </ScrollView>
-            {/* <Flatlist 
-                style = {styles.list}
-                data = {todoList}    
-                renderItem = {}
-            /> */}
+            </ScrollView> */}
+            <SafeAreaView style = {{marginTop:50}}>
+            <FlatList
+                data = {todoList.filter(statusWiseList)}    
+                renderItem = {renderItem}
+                keyExtractor={(item) => item.title}
+            />
+            </SafeAreaView>
+
         </View>
 
         <View style={{ position:'absolute', bottom:'5%', right:'5%'}}>
@@ -159,6 +182,7 @@ const styles = StyleSheet.create({
     },
     listContainer:{
         flex:4,
+        padding:10,
         backgroundColor:'#ECECEC',
         borderTopEndRadius:30,
         borderTopStartRadius:30
